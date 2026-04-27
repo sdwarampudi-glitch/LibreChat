@@ -1,35 +1,33 @@
-const path = require('path');
+const logger = require('@librechat/data-schemas').logger;
 
 /**
- * TEMP ARTIFACT SERVICE (WORKING BASELINE)
- * Replace later with real PPT/DOC/PDF generator (Railway service)
+ * SIMPLE ARTIFACT SERVICE (SAFE FALLBACK)
+ * Prevents crashes + returns mock file links
  */
 
 async function generateArtifact({ text, conversationId }) {
   try {
     if (!text) return null;
 
-    // simple rule-based detection
     let type = 'docx';
 
-    if (text.toLowerCase().includes('powerpoint') || text.toLowerCase().includes('ppt')) {
-      type = 'pptx';
-    }
+    const lower = text.toLowerCase();
 
-    if (text.toLowerCase().includes('pdf') || text.toLowerCase().includes('report')) {
+    if (lower.includes('ppt') || lower.includes('powerpoint')) {
+      type = 'pptx';
+    } else if (lower.includes('pdf') || lower.includes('report')) {
       type = 'pdf';
     }
 
-    // MOCK URL (replace with real Railway service later)
     const fileId = `${conversationId}-${Date.now()}`;
 
     return {
       type,
-      url: `https://your-artifact-service.local/files/${fileId}.${type}`,
+      url: `https://example.com/artifacts/${fileId}.${type}`,
       status: 'mock',
     };
   } catch (err) {
-    console.error('[Artifact Service Error]', err);
+    logger?.warn?.('[artifactService] error', err);
     return null;
   }
 }

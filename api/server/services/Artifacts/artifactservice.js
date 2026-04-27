@@ -1,23 +1,39 @@
-const axios = require('axios');
+const path = require('path');
 
-async function generateArtifact(output) {
+/**
+ * TEMP ARTIFACT SERVICE (WORKING BASELINE)
+ * Replace later with real PPT/DOC/PDF generator (Railway service)
+ */
+
+async function generateArtifact({ text, conversationId }) {
   try {
-    const parsed = typeof output === 'string' ? JSON.parse(output) : output;
+    if (!text) return null;
 
-    if (!parsed?.type || !parsed?.sections) return null;
+    // simple rule-based detection
+    let type = 'docx';
 
-    const res = await axios.post(
-      `${process.env.ARTIFACT_SERVICE_URL}/generate`,
-      parsed
-    );
+    if (text.toLowerCase().includes('powerpoint') || text.toLowerCase().includes('ppt')) {
+      type = 'pptx';
+    }
+
+    if (text.toLowerCase().includes('pdf') || text.toLowerCase().includes('report')) {
+      type = 'pdf';
+    }
+
+    // MOCK URL (replace with real Railway service later)
+    const fileId = `${conversationId}-${Date.now()}`;
 
     return {
-      url: res.data.downloadUrl,
-      type: parsed.type,
+      type,
+      url: `https://your-artifact-service.local/files/${fileId}.${type}`,
+      status: 'mock',
     };
-  } catch (e) {
+  } catch (err) {
+    console.error('[Artifact Service Error]', err);
     return null;
   }
 }
 
-module.exports = { generateArtifact };
+module.exports = {
+  generateArtifact,
+};

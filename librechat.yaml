@@ -1,0 +1,13 @@
+endpoints:
+  custom:
+    - name: "Portkey"
+      apiKey: "${PORTKEY_API_KEY}"
+      baseURL: "https://api.portkey.ai/v1"
+      headers:
+        x-portkey-api-key: "${PORTKEY_API_KEY}"
+        x-portkey-config: "${PORTKEY_CONFIG}"
+      models:
+        default:
+          - "@openai/gpt-4o-mini"
+          - "@openai/gpt-4o"
+          - "@anthropic/claude-3-5-sonnet"
